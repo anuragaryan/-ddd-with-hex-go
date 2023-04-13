@@ -3,8 +3,6 @@ package todo
 
 import (
 	"errors"
-
-	"github.com/google/uuid"
 )
 
 var (
@@ -13,15 +11,3 @@ var (
 	//ErrListAlreadyExist is returned when trying to add a list that already exists.
 	ErrListAlreadyExist = errors.New("the list already exists")
 )
-
-// Repository is the repository interface to fulfill to use the todo list aggregate.
-type Repository interface {
-	GetAll() ([]List, error)
-	GetByID(uuid.UUID) (List, error)
-	Add(list List) error
-	Delete(uuid.UUID)
-
-	AddItem(id uuid.UUID, item Item) error
-	ListItem(id uuid.UUID) []Item
-	MarkItemDone(id uuid.UUID, itemID uuid.UUID)
-}

@@ -22,7 +22,7 @@ const (
 
 // Item is an entity.
 type Item struct {
-	id        uuid.UUID
+	id        string
 	status    Status
 	text      string
 	createdAt time.Time
@@ -37,7 +37,7 @@ func NewItem(text string) (Item, error) {
 	}
 
 	return Item{
-		id:        uuid.New(),
+		id:        uuid.New().String(),
 		status:    initialised,
 		text:      text,
 		createdAt: time.Now(),
@@ -45,7 +45,7 @@ func NewItem(text string) (Item, error) {
 	}, nil
 }
 
-func (i Item) GetID() uuid.UUID {
+func (i Item) GetID() string {
 	return i.id
 }
 

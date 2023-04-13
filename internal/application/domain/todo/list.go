@@ -14,23 +14,35 @@ var (
 
 // List is an aggregate.
 type List struct {
-	id        uuid.UUID
+	name      string
+	id        string
 	todos     []Item
 	createdAt time.Time
 	updatedAt time.Time
 }
 
 // NewList will create a new list of todos.
-func NewList() (List, error) {
-	return List{
-		id:        uuid.New(),
+func NewList(n string) (*List, error) {
+	if n == "" {
+		return nil, errors.New("list needs a name")
+	}
+
+	return &List{
+		id:        uuid.New().String(),
+		name:      n,
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
 	}, nil
 }
 
-func (l *List) GetID() uuid.UUID {
+// GetID ...
+func (l *List) GetID() string {
 	return l.id
+}
+
+// GetName ...
+func (l *List) GetName() string {
+	return l.name
 }
 
 // AddItem adds item to the todo list.
@@ -44,6 +56,11 @@ func (l *List) AddItem(item Item) error {
 	return nil
 }
 
+// ListItems lists all the items in the todo list.
+func (l *List) ListItems() ([]Item, error) {
+	return l.todos, nil
+}
+
 // RemoveItem removes item from the todo list.
 func (l *List) RemoveItem(item Item) {
 	for idx, i := range l.todos {
@@ -55,7 +72,7 @@ func (l *List) RemoveItem(item Item) {
 }
 
 // MarkItemDone marks item in the todo list as done.
-func (l *List) MarkItemDone(id uuid.UUID) {
+func (l *List) MarkItemDone(id string) {
 	for _, i := range l.todos {
 		if i.id == id {
 			i.status = done

@@ -3,20 +3,18 @@ package memory
 import (
 	"sync"
 
-	"github.com/google/uuid"
-
-	"github.com/anuragaryan/ddd-with-hex-go/domain/todo"
+	"github.com/anuragaryan/ddd-with-hex-go/internal/application/domain/todo"
 )
 
 type TodoListRepository struct {
-	lists map[uuid.UUID]todo.List
+	lists map[string]todo.List
 	sync.Mutex
 }
 
 // New is a factory function to generate a new repository of todo lists.
 func New() *TodoListRepository {
 	return &TodoListRepository{
-		lists: make(map[uuid.UUID]todo.List),
+		lists: make(map[string]todo.List),
 	}
 }
 
@@ -28,7 +26,7 @@ func (r *TodoListRepository) GetAll() ([]todo.List, error) {
 	return lists, nil
 }
 
-func (r *TodoListRepository) GetByID(id uuid.UUID) (todo.List, error) {
+func (r *TodoListRepository) GetByID(id string) (todo.List, error) {
 	if list, ok := r.lists[id]; ok {
 		return list, nil
 	}
@@ -47,13 +45,13 @@ func (r *TodoListRepository) Add(list todo.List) error {
 	return nil
 }
 
-func (r *TodoListRepository) Delete(id uuid.UUID) {
+func (r *TodoListRepository) Delete(id string) {
 	r.Lock()
 	delete(r.lists, id)
 	r.Unlock()
 }
 
-func (r *TodoListRepository) AddItem(id uuid.UUID, item todo.Item) error {
+func (r *TodoListRepository) AddItem(id string, item todo.Item) error {
 	l, ok := r.lists[id]
 	if !ok {
 		return todo.ErrListNotFound
@@ -71,8 +69,13 @@ func (r *TodoListRepository) AddItem(id uuid.UUID, item todo.Item) error {
 	return nil
 }
 
-func (r *TodoListRepository) ListItem(id uuid.UUID) []todo.Item {
-	return nil
+func (r *TodoListRepository) ListItem(id string) ([]todo.Item, error) {
+	l, ok := r.lists[id]
+	if !ok {
+		return nil, todo.ErrListNotFound
+	}
+
+	return l.ListItems()
 }
 
-func (r *TodoListRepository) MarkItemDone(id uuid.UUID, itemID uuid.UUID) {}
+func (r *TodoListRepository) MarkItemDone(id string, itemID string) {}
