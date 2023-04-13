@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	intHttp "github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/http"
+	intHttp "github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/presentation/http"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/services/todo"
 )
 
