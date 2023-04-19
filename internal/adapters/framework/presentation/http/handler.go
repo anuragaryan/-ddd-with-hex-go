@@ -68,14 +68,14 @@ func (h *Handler) GetList(w http.ResponseWriter, r *http.Request) {
 
 	for _, listItem := range listItems {
 		responseListItems = append(responseListItems, item{
-			ID:   listItem.GetID(),
-			Item: listItem.GetText(),
+			ID:   listItem.ID,
+			Item: listItem.Text,
 		})
 	}
 
 	responseList := list{
-		ID:    l.GetID(),
-		Name:  l.GetName(),
+		ID:    l.ID,
+		Name:  l.Name,
 		Items: responseListItems,
 	}
 
@@ -94,8 +94,8 @@ func (h *Handler) GetLists(w http.ResponseWriter, _ *http.Request) {
 	var responseList []list
 	for _, l := range ll {
 		responseList = append(responseList, list{
-			ID:   l.GetID(),
-			Name: l.GetName(),
+			ID:   l.ID,
+			Name: l.Name,
 		})
 	}
 

@@ -5,9 +5,9 @@ type createListRequest struct {
 }
 
 type list struct {
-	ID    string
-	Name  string
-	Items []item
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Items []item `json:"items"`
 }
 
 type getListResponse struct {

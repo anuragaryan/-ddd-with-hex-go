@@ -22,11 +22,11 @@ const (
 
 // Item is an entity.
 type Item struct {
-	id        string
-	status    Status
-	text      string
-	createdAt time.Time
-	updatedAt time.Time
+	ID        string
+	Status    Status
+	Text      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // NewItem will create a new item.
@@ -37,23 +37,15 @@ func NewItem(text string) (Item, error) {
 	}
 
 	return Item{
-		id:        uuid.New().String(),
-		status:    initialised,
-		text:      text,
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
+		ID:        uuid.New().String(),
+		Status:    initialised,
+		Text:      text,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}, nil
-}
-
-func (i Item) GetID() string {
-	return i.id
-}
-
-func (i Item) GetText() string {
-	return i.text
 }
 
 // Done marks the status of an item as done.
 func (i Item) Done() {
-	i.status = done
+	i.Status = done
 }

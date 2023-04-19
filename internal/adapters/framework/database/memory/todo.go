@@ -34,12 +34,12 @@ func (r *TodoListRepository) GetByID(id string) (todo.List, error) {
 }
 
 func (r *TodoListRepository) Add(list todo.List) error {
-	if _, ok := r.lists[list.GetID()]; ok {
+	if _, ok := r.lists[list.ID]; ok {
 		return todo.ErrListAlreadyExist
 	}
 
 	r.Lock()
-	r.lists[list.GetID()] = list
+	r.lists[list.ID] = list
 	r.Unlock()
 
 	return nil

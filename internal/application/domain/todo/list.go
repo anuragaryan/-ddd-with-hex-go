@@ -14,11 +14,11 @@ var (
 
 // List is an aggregate.
 type List struct {
-	name      string
-	id        string
-	todos     []Item
-	createdAt time.Time
-	updatedAt time.Time
+	ID        string
+	Name      string
+	Todos     []Item
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // NewList will create a new list of todos.
@@ -28,44 +28,34 @@ func NewList(n string) (*List, error) {
 	}
 
 	return &List{
-		id:        uuid.New().String(),
-		name:      n,
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
+		ID:        uuid.New().String(),
+		Name:      n,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}, nil
-}
-
-// GetID ...
-func (l *List) GetID() string {
-	return l.id
-}
-
-// GetName ...
-func (l *List) GetName() string {
-	return l.name
 }
 
 // AddItem adds item to the todo list.
 func (l *List) AddItem(item Item) error {
-	for _, i := range l.todos {
-		if i.id == item.id {
+	for _, i := range l.Todos {
+		if i.ID == item.ID {
 			return ErrItemAlreadyExists
 		}
 	}
-	l.todos = append(l.todos, item)
+	l.Todos = append(l.Todos, item)
 	return nil
 }
 
 // ListItems lists all the items in the todo list.
 func (l *List) ListItems() ([]Item, error) {
-	return l.todos, nil
+	return l.Todos, nil
 }
 
 // RemoveItem removes item from the todo list.
 func (l *List) RemoveItem(item Item) {
-	for idx, i := range l.todos {
-		if i.id == item.id {
-			l.todos = append(l.todos[:idx], l.todos[idx+1:]...)
+	for idx, i := range l.Todos {
+		if i.ID == item.ID {
+			l.Todos = append(l.Todos[:idx], l.Todos[idx+1:]...)
 			break
 		}
 	}
@@ -74,9 +64,9 @@ func (l *List) RemoveItem(item Item) {
 // MarkItemDone marks item in the todo list as done.
 func (l *List) MarkItemDone(id string) {
 	// TALK: Mutation on aggregates and not entities, entities are not exposed to the outisde world directly.
-	for _, i := range l.todos {
-		if i.id == id {
-			i.status = done
+	for _, i := range l.Todos {
+		if i.ID == id {
+			i.Status = done
 		}
 	}
 }
