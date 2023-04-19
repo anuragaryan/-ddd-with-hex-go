@@ -9,8 +9,11 @@ import (
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/services/todo"
 )
 
+// TALK: dependency inversion.
+
 func main() {
 
+	// TALK: emphasise on dependency injection.
 	todoService, err := todo.NewService(
 		todo.WithMemoryRepository(),
 	)

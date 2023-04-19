@@ -48,6 +48,8 @@ func (s *Service) CreateList(name string) error {
 	}
 
 	err = s.todos.Add(*l)
+	// TODO: Dispatch an event and later on wire up a notifier which notifies emails when a list is created/modified.
+
 	return err
 }
 

@@ -52,3 +52,8 @@ func (i Item) GetID() string {
 func (i Item) GetText() string {
 	return i.text
 }
+
+// Done marks the status of an item as done.
+func (i Item) Done() {
+	i.status = done
+}
