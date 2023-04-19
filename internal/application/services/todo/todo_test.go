@@ -16,21 +16,22 @@ func TestService_CreateList(t *testing.T) {
 	tests := []struct {
 		name     string
 		nameList string
-		mocks    func(s *mockports.MockStoragePort)
+		mocks    func(s *mockports.MockStoragePort, e *mockports.MockEventHandlerPort)
 		wantErr  string
 	}{
 		{
 			name:     "the list is created successfully",
 			nameList: "my most important list",
-			mocks: func(s *mockports.MockStoragePort) {
+			mocks: func(s *mockports.MockStoragePort, e *mockports.MockEventHandlerPort) {
 				s.EXPECT().Add(gomock.Any()).Return(nil).Times(1)
+				e.EXPECT().Notify(gomock.Any()).Return(nil).Times(1)
 			},
 			wantErr: "",
 		},
 		{
 			name:     "storage returns error",
 			nameList: "my most important list",
-			mocks: func(s *mockports.MockStoragePort) {
+			mocks: func(s *mockports.MockStoragePort, e *mockports.MockEventHandlerPort) {
 				s.EXPECT().Add(gomock.Any()).Return(errors.New("can't reach mysql")).Times(1)
 			},
 			wantErr: "can't reach mysql",
@@ -42,9 +43,13 @@ func TestService_CreateList(t *testing.T) {
 
 			//TALK: Dependency injection.
 			storage := mockports.NewMockStoragePort(ctrl)
-			tt.mocks(storage)
+			eventHandler := mockports.NewMockEventHandlerPort(ctrl)
+			tt.mocks(storage, eventHandler)
 
-			s, err := NewService(withRepository(storage))
+			s, err := NewService(
+				withRepository(storage),
+				WithEventsHandlers(eventHandler),
+			)
 			assert.NoError(t, err)
 
 			err = s.CreateList(tt.nameList)

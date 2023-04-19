@@ -4,13 +4,15 @@ import (
 	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/memory"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/sql"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/domain/todo"
+	todo2 "github.com/anuragaryan/ddd-with-hex-go/internal/application/events/todo"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/ports"
 )
 
 type Configuration func(os *Service) error
 
 type Service struct {
-	todos ports.StoragePort
+	todos  ports.StoragePort
+	events ports.EventHandlerPort
 }
 
 func NewService(cfgs ...Configuration) (*Service, error) {
@@ -31,14 +33,20 @@ func withRepository(tr ports.StoragePort) Configuration {
 	}
 }
 
-func WithMemoryRepository() Configuration {
-	m := memory.New()
+func WithMemoryRepository(m *memory.TodoListRepository) Configuration {
 	return withRepository(m)
 }
 
 func WithSQLRepository() Configuration {
 	d := sql.New()
 	return withRepository(d)
+}
+
+func WithEventsHandlers(e ports.EventHandlerPort) Configuration {
+	return func(s *Service) error {
+		s.events = e
+		return nil
+	}
 }
 
 func (s *Service) CreateList(name string) error {
@@ -48,7 +56,11 @@ func (s *Service) CreateList(name string) error {
 	}
 
 	err = s.todos.Add(*l)
-	//TODO: Dispatch an event and later on wire up a notifier which notifies emails when a list is created/modified.
+	if err != nil {
+		return err
+	}
+
+	err = s.events.Notify(todo2.NewListCreatedEvent(l.ID))
 
 	return err
 }

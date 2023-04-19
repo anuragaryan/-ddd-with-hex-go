@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	todo "github.com/anuragaryan/ddd-with-hex-go/internal/application/domain/todo"
+	events "github.com/anuragaryan/ddd-with-hex-go/internal/application/events"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -129,4 +130,58 @@ func (m *MockStoragePort) MarkItemDone(id, itemID string) {
 func (mr *MockStoragePortMockRecorder) MarkItemDone(id, itemID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkItemDone", reflect.TypeOf((*MockStoragePort)(nil).MarkItemDone), id, itemID)
+}
+
+// MockEventHandlerPort is a mock of EventHandlerPort interface.
+type MockEventHandlerPort struct {
+	ctrl     *gomock.Controller
+	recorder *MockEventHandlerPortMockRecorder
+}
+
+// MockEventHandlerPortMockRecorder is the mock recorder for MockEventHandlerPort.
+type MockEventHandlerPortMockRecorder struct {
+	mock *MockEventHandlerPort
+}
+
+// NewMockEventHandlerPort creates a new mock instance.
+func NewMockEventHandlerPort(ctrl *gomock.Controller) *MockEventHandlerPort {
+	mock := &MockEventHandlerPort{ctrl: ctrl}
+	mock.recorder = &MockEventHandlerPortMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockEventHandlerPort) EXPECT() *MockEventHandlerPortMockRecorder {
+	return m.recorder
+}
+
+// Notify mocks base method.
+func (m *MockEventHandlerPort) Notify(event events.Event) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Notify", event)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Notify indicates an expected call of Notify.
+func (mr *MockEventHandlerPortMockRecorder) Notify(event interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Notify", reflect.TypeOf((*MockEventHandlerPort)(nil).Notify), event)
+}
+
+// Subscribe mocks base method.
+func (m *MockEventHandlerPort) Subscribe(handler events.EventHandler, events ...events.Event) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{handler}
+	for _, a := range events {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Subscribe", varargs...)
+}
+
+// Subscribe indicates an expected call of Subscribe.
+func (mr *MockEventHandlerPortMockRecorder) Subscribe(handler interface{}, events ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{handler}, events...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Subscribe", reflect.TypeOf((*MockEventHandlerPort)(nil).Subscribe), varargs...)
 }

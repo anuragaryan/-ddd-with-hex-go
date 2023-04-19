@@ -5,17 +5,26 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/memory"
 	intHttp "github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/presentation/http"
+	"github.com/anuragaryan/ddd-with-hex-go/internal/application/events"
+	todoevents "github.com/anuragaryan/ddd-with-hex-go/internal/application/events/todo"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/services/todo"
 )
 
 // TALK: dependency inversion.
 
 func main() {
+	eventsPublisher := events.NewEventPublisher()
 
+	todoEventHandler := todoevents.NewEventHandler()
+	eventsPublisher.Subscribe(todoEventHandler, todoevents.ListCreated{}, todoevents.ListItemCreated{}, todoevents.ListItemDone{})
+
+	inmemory := memory.New()
 	// TALK: emphasise on dependency injection.
 	todoService, err := todo.NewService(
-		todo.WithMemoryRepository(),
+		todo.WithMemoryRepository(inmemory),
+		todo.WithEventsHandlers(eventsPublisher),
 	)
 	if err != nil {
 		panic(err)
