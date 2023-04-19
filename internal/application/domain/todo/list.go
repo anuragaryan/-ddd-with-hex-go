@@ -73,11 +73,10 @@ func (l *List) RemoveItem(item Item) {
 
 // MarkItemDone marks item in the todo list as done.
 func (l *List) MarkItemDone(id string) {
+	// TALK: Mutation on aggregates and not entities, entities are not exposed to the outisde world directly.
 	for _, i := range l.todos {
 		if i.id == id {
 			i.status = done
 		}
 	}
 }
-
-// Mutation on aggregates and bnot entities - call out
