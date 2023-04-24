@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/ostafen/clover/v2"
 
-	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/memory"
+	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/nosql"
+	//"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/memory"
 	intHttp "github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/presentation/http"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/events"
 	todoevents "github.com/anuragaryan/ddd-with-hex-go/internal/application/events/todo"
@@ -20,10 +22,14 @@ func main() {
 	todoEventHandler := todoevents.NewEventHandler()
 	eventsPublisher.Subscribe(todoEventHandler, todoevents.ListCreated{}, todoevents.ListItemCreated{}, todoevents.ListItemDone{})
 
-	inmemory := memory.New()
+	//inmemory := memory.New()
+	db, _ := clover.Open("clover-db")
+	db.CreateCollection(nosql.TodosCollection)
+	defer db.Close()
 	// TALK: emphasise on dependency injection.
 	todoService, err := todo.NewService(
-		todo.WithMemoryRepository(inmemory),
+		//todo.WithMemoryRepository(inmemory),
+		todo.WithNoSQLRepository(db),
 		todo.WithEventsHandlers(eventsPublisher),
 	)
 	if err != nil {

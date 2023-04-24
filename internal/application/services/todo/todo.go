@@ -1,8 +1,10 @@
 package todo
 
 import (
+	"github.com/ostafen/clover/v2"
+
 	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/memory"
-	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/sql"
+	"github.com/anuragaryan/ddd-with-hex-go/internal/adapters/framework/database/nosql"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/application/domain/todo"
 	todo2 "github.com/anuragaryan/ddd-with-hex-go/internal/application/events/todo"
 	"github.com/anuragaryan/ddd-with-hex-go/internal/ports"
@@ -37,8 +39,8 @@ func WithMemoryRepository(m *memory.TodoListRepository) Configuration {
 	return withRepository(m)
 }
 
-func WithSQLRepository() Configuration {
-	d := sql.New()
+func WithNoSQLRepository(db *clover.DB) Configuration {
+	d := nosql.New(db)
 	return withRepository(d)
 }
 
